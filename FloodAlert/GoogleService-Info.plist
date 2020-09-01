@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>454049538471-utk8eaie0efe72ubl29m6trfltqh8cpf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.454049538471-utk8eaie0efe72ubl29m6trfltqh8cpf</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA5envP822fBYIdwBAmMYKsX40aOR91b6M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>454049538471</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.jaraad.FloodAlert</string>
+	<key>PROJECT_ID</key>
+	<string>flood-alert-6327f</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flood-alert-6327f.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:454049538471:ios:4cdb2cec4595633b10d682</string>
+	<key>DATABASE_URL</key>
+	<string>https://flood-alert-6327f.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,6 @@
+framework module Pods_FloodAlert {
+  umbrella header "Pods-FloodAlert-umbrella.h"
+
+  export *
+  module * { export * }
+}

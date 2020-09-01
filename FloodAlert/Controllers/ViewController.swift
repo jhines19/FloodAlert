@@ -9,14 +9,22 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Firebase
+import FirebaseFirestore
 
 class ViewController: UIViewController, MKMapViewDelegate {
 
-    private let locationManager = CLLocationManager()
-    private var currentCoordinate: CLLocationCoordinate2D?
-
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var floodButton: UIButton!
+    
+    private lazy var db: Firestore = {
+        
+        let firestoreDB = Firestore.firestore()
+        return firestoreDB
+    }()
+    
+    private let locationManager = CLLocationManager()
+    private var currentCoordinate: CLLocationCoordinate2D?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,8 +51,17 @@ class ViewController: UIViewController, MKMapViewDelegate {
         annotation.subtitle = "Reported on 09/01/2020 8:58 AM"
         annotation.coordinate = location.coordinate
         self.mapView.addAnnotation(annotation)
+        
+        saveFloodToFirebase()
+        //initialize data saving function
     }
+    //Creating function to save flood alert data pinned by users
     
+    private func saveFloodToFirebase() {
+        
+    
+        
+    }
     private func setupUI() {
         
         self.floodButton.layer.cornerRadius = 18.0
