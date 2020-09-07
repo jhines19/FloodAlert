@@ -12,113 +12,173 @@ import CoreLocation
 import Firebase
 import FirebaseFirestore
 
-class ViewController: UIViewController, MKMapViewDelegate {
 
-    @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var floodButton: UIButton!
-    
-    private lazy var db: Firestore = {
+    class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+
+        @IBOutlet weak var mapView: MKMapView!
+        @IBOutlet weak var floodButton: UIButton!
+
+        private(set) var floods = [Flood]()
         
-        let firestoreDB = Firestore.firestore()
-        return firestoreDB
-    }()
-    
-    private let locationManager = CLLocationManager()
-    private var currentCoordinate: CLLocationCoordinate2D?
+        private var currentCoordinate: CLLocationCoordinate2D?
+        
+        private var documentRef: DocumentReference!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureLocationServices()
-        self.mapView.delegate = self
+        private lazy var db: Firestore = {
+            
+            let firestoreDB = Firestore.firestore()
+            let settings = firestoreDB.settings
+            settings.areTimestampsInSnapshotsEnabled = true
+            firestoreDB.settings = settings
+            return firestoreDB
+        }()
+        
+        private lazy var locationManager: CLLocationManager = {
+            
+            let manager = CLLocationManager()
+            manager.requestAlwaysAuthorization()
+            return manager
+        } ()
+        
+      override func viewDidLoad() {
+            super.viewDidLoad()
+        
+        self.locationManager.startUpdatingLocation()
+        self.mapView.showsUserLocation = true
+            self.mapView.delegate = self
+           
         // Do any additional setup after loading the view.
-        
-        setupUI()
-        
-    }
-    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        
-        let region = MKCoordinateRegion(center: self.mapView.userLocation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008))
-        self.mapView.setRegion(region, animated: true)
-    }
-    @IBAction func addFloodButtonPressed() {
-       
-        //add annotation functionality when putton clicked
-        guard let location = self.locationManager.location else {
-            return
+            
+            setupUI()
+            configureObservers()
         }
-        let annotation = MKPointAnnotation()
-        annotation.title = "Flooded"
-        annotation.subtitle = "Reported on 09/01/2020 8:58 AM"
-        annotation.coordinate = location.coordinate
-        self.mapView.addAnnotation(annotation)
         
-        saveFloodToFirebase()
-        //initialize data saving function
-    }
-    //Creating function to save flood alert data pinned by users
-    
-    private func saveFloodToFirebase() {
-        
-    
-        
-    }
-    private func setupUI() {
-        
-        self.floodButton.layer.cornerRadius = 18.0
-        self.floodButton.layer.masksToBounds = true
-    }
-    
-    private func configureLocationServices() {
-        locationManager.delegate = self
-
-        let status = CLLocationManager.authorizationStatus()
-
-        if status == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-        } else if status == .authorizedAlways || status == .authorizedWhenInUse {
-           beginLocationsUpdate(locationManager: locationManager)
+        private func updateAnnotations() {
+            DispatchQueue.main.async {
+                self.floods.forEach {
+                    self.addFloodToMap($0)
+                }
+            }
+            
         }
-    }
+        private func configureObservers() {
+            
+            self.db.collection("flooded-regions").addSnapshotListener { [weak self] snapshot, error in
+                
+                guard let _ = snapshot, error == nil else { print("Error fetching document")
+                    return
+                }
+                
+                snapshot?.documentChanges.forEach { diff in
+                    
+                    if diff.type == .added {
+                        if let flood = Flood(diff.document) {
+                            self?.floods.append(flood)
+                            self?.updateAnnotations()
+                        }
+                        
+                    } else if diff.type == .removed {
+                        if let flood = Flood(diff.document) {
+                            if let floods = self?.floods {
+                                self?.floods = floods.filter { $0.documentId != flood.documentId}
+                                self?.updateAnnotations()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+            
+            let region = MKCoordinateRegion(center: self.mapView.userLocation.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.008, longitudeDelta: 0.008))
+            self.mapView.setRegion(region, animated: true)
+        }
+        
+        @IBAction func addFloodButtonPressed() {
+            
+            saveFloodToFirebase()
+        }
 
-    private func beginLocationsUpdate(locationManager: CLLocationManager) {
-    // turn on setting to show location if authorized
-       mapView.showsUserLocation = true
-       // accuracy of location data can choose precision
-       locationManager.desiredAccuracy = kCLLocationAccuracyBest
-       locationManager.startUpdatingLocation()
-
-    }
-
-    private func zoomToLatestLocation(with coordinate: CLLocationCoordinate2D) {
-//        sets center point with lat 10k meters and long same
-        let zoomRegion = MKCoordinateRegion.init(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        mapView.setRegion(zoomRegion, animated: true)
-    }
-
+        private func addFloodToMap(_ flood: Flood) {
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: flood.latitude, longitude: flood.longitude)
+            annotation.title = "Flooded"
+            annotation.subtitle = flood.reportedDate.formatAsString()
+            self.mapView.addAnnotation(annotation)
+            
+        }
+        private func saveFloodToFirebase() {
+        
+            guard let location = self.locationManager.location else {
+                return
+        }
+            var flood = Flood(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            
+            self.documentRef = self.db.collection("flooded-regions").addDocument(data: flood.toDictionary()) { [weak self] error in
+                
+                if let error = error {
+                    print(error)
+                } else {
+                    flood.documentId = self?.documentRef.documentID
+                    self?.addFloodToMap(flood)
+                }
+                
+            }
 }
+        private func setupUI() {
+                   
+                   self.floodButton.layer.cornerRadius = 18.0
+                   self.floodButton.layer.masksToBounds = true
+        }
+        
+            //get a location
+            
+    
+       func configureLocationServices() {
+            locationManager.delegate = self
 
+            let status = CLLocationManager.authorizationStatus()
 
-extension ViewController: CLLocationManagerDelegate {
+            if status == .notDetermined {
+                locationManager.requestWhenInUseAuthorization()
+            } else if status == .authorizedAlways || status == .authorizedWhenInUse {
+               beginLocationsUpdate(locationManager: locationManager)
+            }
+        }
+            
+        func beginLocationsUpdate(locationManager: CLLocationManager) {
+        // turn on setting to show location if authorized
+           mapView.showsUserLocation = true
+           // accuracy of location data can choose precision
+           locationManager.desiredAccuracy = kCLLocationAccuracyBest
+           locationManager.startUpdatingLocation()
 
-    // method triggered when new location change
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("did get latest location")
+        }
+
+        func zoomToLatestLocation(with coordinate: CLLocationCoordinate2D) {
+    //        sets center point with lat 10k meters and long same
+            let zoomRegion = MKCoordinateRegion.init(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(zoomRegion, animated: true)
+        }
+
+        // method triggered when new location change
+        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            print("did get latest location")
 
         guard let latestLocation = locations.first else {return}
-
+            
         if currentCoordinate == nil {
-            zoomToLatestLocation(with: latestLocation.coordinate)
+        zoomToLatestLocation(with: latestLocation.coordinate)
+        }
+           currentCoordinate = latestLocation.coordinate
         }
 
-        currentCoordinate = latestLocation.coordinate
-    }
-
-    // grant or deny permissions for location services update
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print("the status changed")
-        if status == .authorizedAlways || status == .authorizedWhenInUse {
-           beginLocationsUpdate(locationManager: manager)
+        // grant or deny permissions for location services update
+        func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+            print("the status changed")
+            if status == .authorizedAlways || status == .authorizedWhenInUse {
+               beginLocationsUpdate(locationManager: manager)
+            }
         }
-    }
-
 }
