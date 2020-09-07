@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F1CA6412505D64B000D93A4 /* FloodAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1CA6402505D64B000D93A4 /* FloodAnnotation.swift */; };
+		0F1CA6492505E021000D93A4 /* UIButton+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1CA6482505E021000D93A4 /* UIButton+Extensions.swift */; };
+		0F1CA64F2505E5CF000D93A4 /* flood-annotation.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F1CA64E2505E5CF000D93A4 /* flood-annotation.png */; };
+		0F1CA6532505E6C8000D93A4 /* trash-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F1CA6522505E6C8000D93A4 /* trash-icon.png */; };
 		0F5F1D4E24FB3CD20009CCAE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5F1D4D24FB3CD20009CCAE /* AppDelegate.swift */; };
 		0F5F1D5024FB3CD20009CCAE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5F1D4F24FB3CD20009CCAE /* SceneDelegate.swift */; };
 		0F5F1D5224FB3CD20009CCAE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5F1D5124FB3CD20009CCAE /* ViewController.swift */; };
@@ -20,6 +24,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F1CA6402505D64B000D93A4 /* FloodAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloodAnnotation.swift; sourceTree = "<group>"; };
+		0F1CA6482505E021000D93A4 /* UIButton+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extensions.swift"; sourceTree = "<group>"; };
+		0F1CA64E2505E5CF000D93A4 /* flood-annotation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flood-annotation.png"; path = "../../../../Downloads/flood-annotation.png"; sourceTree = "<group>"; };
+		0F1CA6522505E6C8000D93A4 /* trash-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "trash-icon.png"; path = "../../../../Downloads/trash-icon.png"; sourceTree = "<group>"; };
 		0F5F1D4A24FB3CD20009CCAE /* FloodAlert.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FloodAlert.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F5F1D4D24FB3CD20009CCAE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0F5F1D4F24FB3CD20009CCAE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,6 +56,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F1CA63F2505D611000D93A4 /* Annotations */ = {
+			isa = PBXGroup;
+			children = (
+				0F1CA6402505D64B000D93A4 /* FloodAnnotation.swift */,
+			);
+			path = Annotations;
+			sourceTree = "<group>";
+		};
+		0F1CA6432505D824000D93A4 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				0F1CA64E2505E5CF000D93A4 /* flood-annotation.png */,
+				0F1CA6522505E6C8000D93A4 /* trash-icon.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 		0F5F1D4124FB3CD20009CCAE = {
 			isa = PBXGroup;
 			children = (
@@ -69,6 +94,8 @@
 		0F5F1D4C24FB3CD20009CCAE /* FloodAlert */ = {
 			isa = PBXGroup;
 			children = (
+				0F1CA6432505D824000D93A4 /* Images */,
+				0F1CA63F2505D611000D93A4 /* Annotations */,
 				0FE49DB324FEE11800A2CAFC /* Extensions */,
 				0FE49DB024FDDF8800A2CAFC /* Model */,
 				0F5F1D4D24FB3CD20009CCAE /* AppDelegate.swift */,
@@ -103,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				0FE49DB424FEE12F00A2CAFC /* Date+Extensions.swift */,
+				0F1CA6482505E021000D93A4 /* UIButton+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -187,7 +215,9 @@
 				0F5F1D5A24FB3CD40009CCAE /* LaunchScreen.storyboard in Resources */,
 				0FE49DAF24FDDB7C00A2CAFC /* GoogleService-Info.plist in Resources */,
 				0F5F1D5724FB3CD40009CCAE /* Assets.xcassets in Resources */,
+				0F1CA6532505E6C8000D93A4 /* trash-icon.png in Resources */,
 				0F5F1D5524FB3CD20009CCAE /* Main.storyboard in Resources */,
+				0F1CA64F2505E5CF000D93A4 /* flood-annotation.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,10 +271,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F5F1D5224FB3CD20009CCAE /* ViewController.swift in Sources */,
+				0F1CA6492505E021000D93A4 /* UIButton+Extensions.swift in Sources */,
 				0F5F1D4E24FB3CD20009CCAE /* AppDelegate.swift in Sources */,
 				0FE49DB224FDDFB600A2CAFC /* Flood.swift in Sources */,
 				0FE49DB524FEE12F00A2CAFC /* Date+Extensions.swift in Sources */,
 				0F5F1D5024FB3CD20009CCAE /* SceneDelegate.swift in Sources */,
+				0F1CA6412505D64B000D93A4 /* FloodAnnotation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
